@@ -9,10 +9,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='squares.css') }}">
     <script src="{{ url_for('static', filename='color_change.js') }}"></script>
     <script src="{{ url_for('static', filename='property_change.js') }}"></script>
-    <script src="{{ url_for('static', filename='property_hide.js') }}"></script>
+    <script src="{{ url_for('static', filename='enabling.js') }}"></script>
+    <script src="{{ url_for('static', filename='reset.js') }}"></script>
 </head>
 <body>
-    <form class="registration">
+    <form class="registration" method="POST" action="/" autocomplete="off" >
         <h1>Регистрация</h1>
         <hr>
         <div class="group">
@@ -28,21 +29,23 @@
         <div class="error" id="error-name-surname"></div>
 
         <label for="birth-date">Дата рождения:</label>
-        <input type="date" id="birth-date" name="birth-date" min="1900-01-01" max="{{ max_date }}" required hx-trigger="blur" hx-post="/validate_birthdate" hx-target="#validation-surname">
-        <div class="error" id="validation-surname"></div>
+        <input type="date" id="birth-date" name="birth-date" min="1900-01-01" max="{{ max_date }}" required hx-trigger="blur" hx-post="/validate_birthdate" hx-target="#validation-birth">
+        <div class="error" id="validation-birth"></div>
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required hx-trigger="blur" hx-post="/validate_email" hx-target="#validation-email">
         <div class="error" id="validation-email"></div>
 
         <label for="password">Пароль:</label>
-        <input type="password" id="password" name="password" required hx-trigger="blur" hx-post="/validate_pass" hx-target="#validation-surname">
+        <input type="password" id="password" name="password" required hx-trigger="blur" hx-post="/validate_pass" hx-target="#validation-pass">
+        <div class="error" id="validation-pass"></div>
 
         <label for="pass-confirm">Подтверждение пароля:</label>
-        <input type="password" id="pass-confirm" name="pass-confirm" required hx-trigger="blur" hx-post="/validate_confpass" hx-target="#validation-surname">
+        <input type="password" id="pass-confirm" name="pass-confirm" required hx-trigger="blur" hx-post="/validate_pass_conf" hx-target="#validation-pass-conf">
+        <div class="error" id="validation-pass-conf"></div>
         
-        <button type="submit" disabled><span class="spanBtn" hx-trigger="click" hx-post="/validation-messages" hx-target="#validation-errors-show"><span class="spanBtn" hx-trigger="mouseleave" hx-post="/hide-messages" hx-target="#validation-errors-show">Отправить</span></span></button>
         <div id="validation-errors-show"></div>
+        <button type="submit" onclick="alert('Вы успешно зарегистрировались!')" disabled><span class="spanBtn" hx-trigger="click" hx-post="/validation-messages" hx-target="#validation-errors-show"><span class="spanBtn" hx-trigger="mouseleave" hx-post="/hide-messages" hx-target="#validation-errors-show">Отправить</span></span></button>
     </form>
         <ul class="circles">
             {{ li_amount | safe }}

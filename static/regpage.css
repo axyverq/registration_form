@@ -110,7 +110,6 @@ button:hover {
 }
 
 .error {
-    display: none;
     color: red;
     font-size: small;
     letter-spacing: 0.1px;

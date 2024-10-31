@@ -1,5 +1,5 @@
 function changeClassProperty() {
-    var elements = document.getElementsByClassName("error");
+    var elements = document.getElementsByClassName("displaying");
     
     for (var i = 0; i < elements.length; i++) {
         if (elements[i].textContent.trim() !== "") {
