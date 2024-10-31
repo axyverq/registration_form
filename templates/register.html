@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/htmx.org@1.9.4"></script>
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='regpage.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='squares.css') }}">
+    <script src="{{ url_for('static', filename='color_change.js') }}"></script>
+    <script src="{{ url_for('static', filename='property_change.js') }}"></script>
+    <script src="{{ url_for('static', filename='property_hide.js') }}"></script>
+</head>
+<body>
+    <form class="registration">
+        <h1>Регистрация</h1>
+        <hr>
+        <div class="group">
+            <div>
+                <label for="surname">Фамилия:</label>
+                <input type="text" id="surname" name="surname" placeholder="Иванов" maxlength="25" required hx-trigger="blur" hx-post="/validate_surname" hx-target="#error-name-surname">
+            </div>
+            <div>
+                <label for="name">Имя:</label>
+                <input type="text" id="name" name= "name" placeholder="Иван" maxlength="25" required hx-trigger="blur" hx-post="/validate_name" hx-target="#error-name-surname">
+            </div>
+        </div>
+        <div class="error" id="error-name-surname"></div>
+
+        <label for="birth-date">Дата рождения:</label>
+        <input type="date" id="birth-date" name="birth-date" min="1900-01-01" max="{{ max_date }}" required hx-trigger="blur" hx-post="/validate_birthdate" hx-target="#validation-surname">
+        <div class="error" id="validation-surname"></div>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required hx-trigger="blur" hx-post="/validate_email" hx-target="#validation-email">
+        <div class="error" id="validation-email"></div>
+
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" required hx-trigger="blur" hx-post="/validate_pass" hx-target="#validation-surname">
+
+        <label for="pass-confirm">Подтверждение пароля:</label>
+        <input type="password" id="pass-confirm" name="pass-confirm" required hx-trigger="blur" hx-post="/validate_confpass" hx-target="#validation-surname">
+        
+        <button type="submit" disabled><span class="spanBtn" hx-trigger="click" hx-post="/validation-messages" hx-target="#validation-errors-show"><span class="spanBtn" hx-trigger="mouseleave" hx-post="/hide-messages" hx-target="#validation-errors-show">Отправить</span></span></button>
+        <div id="validation-errors-show"></div>
+    </form>
+        <ul class="circles">
+            {{ li_amount | safe }}
+        </ul>
+</body>
+</html>
