@@ -124,13 +124,19 @@ def validation_messages():
         if not value:
             result += error_former(key, error_name=None)
     if result == "":
-        print("ВСЕ ОК")
-        return scr_enable
+        return ""
     print(result)
     return result + scr_disp
     
 @app.route('/hide-messages', methods=['POST'])
 def hide_messages():
+    result = ""
+    for key, value in confirmed_fields.items():
+        if not value:
+            result += error_former(key, error_name=None)
+    if result == "":
+        print("ВСЕ ОК")
+        return scr_enable
     return ""
 
 def access_former(field):
