@@ -7,6 +7,8 @@ app = Flask(__name__)
 errors = {
     "birth":"Вы должны быть не моложе 18 лет для завершения регистрации. Пожалуйста, проверьте введенную дату рождения",
     "null_birth":"Поле с датой не заполнено",
+    "nonexising-birth":"Введите существующую дату",
+    "tooold-birth":"Введите дату не ранее 1900 года",
     "email":"Введите корректную электронную почту",
     "null_email":"Поле с электронной почтой не заполнено",
     "name_surname":"Поля должны содержать только символы русского алфавита без пробелов, спецсимволов и цифр",
@@ -31,7 +33,6 @@ surname_scr = ""
 name_scr = ""
 scr_disp = "<script>changeClassProperty();</script>"
 scr_hide = "<script>changeClassPropertyHide();</script>"
-scr_enable = "<script>enableAllButtons();</script>"
 
 
 li_amount = 10 # визуальная составляющая, количество квадратов на фоне
@@ -39,6 +40,8 @@ today_str = datetime.today().strftime('%Y-%m-%d')
 
 @app.route('/', methods=['GET','POST'])
 def index():
+    for key in confirmed_fields.keys():
+        confirmed_fields[key] = False
     return render_template('register.html', max_date=today_str, li_amount='<li></li>\n'*li_amount)
     
 @app.route('/validate_surname', methods=['POST'])
@@ -50,7 +53,7 @@ def validate_surname():
         # print(surname, normal(surname))
         surname_scr = scr_input_form("surname", "red")
         return surname_scr + name_scr + spanned(errors["name_surname"])
-    surname_scr = access_former("surname")
+    surname_scr = success_former("surname")
     if normal_str(surname) and normal_str(name):
         confirmed_fields["surname"] = True
         confirmed_fields["name"] = True
@@ -66,7 +69,7 @@ def validate_name():
         # print(name, normal(name))
         name_scr = scr_input_form("name", "red")
         return surname_scr + name_scr + spanned(errors["name_surname"])
-    name_scr = access_former("name")
+    name_scr = success_former("name")
     if normal_str(surname) and normal_str(name):
         confirmed_fields["surname"] = True
         confirmed_fields["name"] = True
@@ -79,9 +82,13 @@ def validate_birthdate():
     if date:
         date = datetime.strptime(date, '%Y-%m-%d')
         age = (datetime.today() - date).days // 365
+        if date > datetime.today():
+            return error_former("birth-date", errors["nonexising-birth"])
+        if date.year < 1900:
+            return error_former("birth-date", errors["tooold-birth"])
         if age < 18:
             return error_former("birth-date", errors["birth"])
-        return access_former("birth-date")
+        return success_former("birth-date")
     return error_former("birth-date", errors["null_birth"])
 
 @app.route('/validate_email', methods=['POST'])
@@ -91,7 +98,7 @@ def validate_email():
     if not normal_email(email):
         if email is None or email == '': return error_former("email", errors["null_email"])
         return error_former("email", errors["email"])
-    return access_former("email")
+    return success_former("email")
     
 @app.route('/validate_pass', methods=['POST'])
 def validate_pass():
@@ -105,7 +112,7 @@ def validate_pass():
     if not (re.search(r"\d", password) and re.search(r"[A-Z]", password)
             and re.search(r"[a-z]", password) and re.search(r"[@$!%*?&]", password)):
         return error_former("password", errors["easy_pass"])
-    return access_former("password")
+    return success_former("password")
 
 @app.route('/validate_pass_conf', methods=['POST'])
 def validate_pass_conf():
@@ -115,7 +122,7 @@ def validate_pass_conf():
     password = request.form.get('password')
     if not password == passconf:
         return error_former("pass-confirm", errors["pass_confirm"])
-    return access_former("pass-confirm")
+    return success_former("pass-confirm")
     
 @app.route('/validation-messages', methods=['POST'])
 def validation_messages():
@@ -130,16 +137,23 @@ def validation_messages():
     
 @app.route('/hide-messages', methods=['POST'])
 def hide_messages():
+    return ""
+
+@app.route('/access', methods=['POST'])
+def access():
+    for key, value in confirmed_fields.items():
+        print(key, value)
+    print("ХТО")
     result = ""
     for key, value in confirmed_fields.items():
         if not value:
             result += error_former(key, error_name=None)
     if result == "":
-        print("ВСЕ ОК")
-        return scr_enable
-    return ""
+        return access_former("+")
+    return access_former("-")
+    
 
-def access_former(field):
+def success_former(field):
     confirmed_fields[field] = True
     return scr_input_form(field, "#1891ac")
 def error_former(field, error_name=None):
@@ -147,6 +161,8 @@ def error_former(field, error_name=None):
     scr = scr_input_form(field, "red")
     if error_name == None: return scr
     return scr + spanned(error_name)
+def access_former(str):
+    return f"<script>btnsAccess(\"{str}\");</script>"
 # функция для выбора параметров скрипта js
 def scr_input_form(name, color):
     return f'<script>changeInputBorderColor("{name}", "{color}");</script>'
@@ -163,7 +179,7 @@ def normal_pass(password):
     return bool(re.match(r"^[A-Za-z\d@$!%*?&]+$", password))
 
 if __name__ == "__main__":
-    webbrowser.open("http://127.0.0.1:5000/")
+    # webbrowser.open("http://127.0.0.1:5000/")
     app.run(debug=True)
     
     

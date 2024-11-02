@@ -1,5 +1,13 @@
-function enableAllButtons() {
-    document.querySelectorAll('button[disabled]').forEach(button => {
-        button.removeAttribute('disabled');
-    });
+function btnsAccess(action) {
+    const buttons = document.querySelectorAll('button');
+    
+    if (action === '+') {
+        buttons.forEach(button => {
+            button.removeAttribute('disabled');
+        });
+    } else if (action === '-') {
+        buttons.forEach(button => {
+            button.setAttribute('disabled', 'true');
+        });
+    }
 }

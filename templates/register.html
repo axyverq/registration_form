@@ -10,7 +10,6 @@
     <script src="{{ url_for('static', filename='color_change.js') }}"></script>
     <script src="{{ url_for('static', filename='property_change.js') }}"></script>
     <script src="{{ url_for('static', filename='enabling.js') }}"></script>
-    <script src="{{ url_for('static', filename='reset.js') }}"></script>
 </head>
 <body>
     <form class="registration" method="POST" action="/" autocomplete="off" >
@@ -45,7 +44,16 @@
         <div class="error" id="validation-pass-conf"></div>
         
         <div id="validation-errors-show"></div>
-        <button type="submit" onclick="alert('Вы успешно зарегистрировались!')" disabled><span class="spanBtn" hx-trigger="click" hx-post="/validation-messages" hx-target="#validation-errors-show"><span class="spanBtn" hx-trigger="mouseleave" hx-post="/hide-messages" hx-target="#validation-errors-show">Отправить</span></span></button>
+        <div id="access-code"></div>
+        <div hx-trigger="mouseenter" hx-post="/access" hx-target="#access-code">
+        <button type="submit" onclick="alert('Вы успешно зарегистрировались!')" disabled>
+            <span class="spanBtn" hx-trigger="click" hx-post="/validation-messages" hx-target="#validation-errors-show">
+                <span class="spanBtn" hx-trigger="mouseleave" hx-post="/hide-messages" hx-target="#validation-errors-show">
+                    Отправить
+                </span>
+            </span>
+        </button>
+        </div>
     </form>
         <ul class="circles">
             {{ li_amount | safe }}
