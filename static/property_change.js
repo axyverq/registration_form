@@ -1,3 +1,4 @@
+// функция включающая отображение сообщения ошибки
 function changeClassProperty() {
     var elements = document.getElementsByClassName("displaying");
     

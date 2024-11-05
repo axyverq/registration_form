@@ -1,4 +1,4 @@
-// Теперь не нужна
+// функция больше не используется
 function changeClassPropertyHide() {
     var elements = document.getElementsByClassName("error");
     

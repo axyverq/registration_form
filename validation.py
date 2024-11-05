@@ -4,6 +4,8 @@ import re
 import webbrowser
 
 app = Flask(__name__)
+
+# словарь с ошибками
 errors = {
     "birth":"Вы должны быть не моложе 18 лет для завершения регистрации. Пожалуйста, проверьте введенную дату рождения",
     "null_birth":"Поле с датой не заполнено",
@@ -20,6 +22,7 @@ errors = {
     "before_pass_confirm":"Сначала введите верный пароль выше"
 }
 
+# поля, прошедшие валидацию
 confirmed_fields = {
     "surname":False,
     "name":False,
@@ -29,13 +32,16 @@ confirmed_fields = {
     "pass-confirm":False,
 }
 
+# скрипты для имени и фамилии
 surname_scr = ""
 name_scr = ""
+
+# функции для отображения и скрытия сообщений ошибок валидации
 scr_disp = "<script>changeClassProperty();</script>"
-scr_hide = "<script>changeClassPropertyHide();</script>"
 
 
 li_amount = 10 # визуальная составляющая, количество квадратов на фоне
+
 today_str = datetime.today().strftime('%Y-%m-%d')
 
 @app.route('/', methods=['GET','POST'])
@@ -152,20 +158,23 @@ def access():
         return access_former("+")
     return access_former("-")
     
-
+# функция возврата скрипта при успешной валидации
 def success_former(field):
     confirmed_fields[field] = True
     return scr_input_form(field, "#1891ac")
+# функция возрата текста и скрипта при ошибке валидации
 def error_former(field, error_name=None):
     confirmed_fields[field] = False
     scr = scr_input_form(field, "red")
     if error_name == None: return scr
     return scr + spanned(error_name)
+# функция возврата скрипта (раз)блокировки кнопки
 def access_former(str):
     return f"<script>btnsAccess(\"{str}\");</script>"
-# функция для выбора параметров скрипта js
+# функция вызова скрипта смены цвета input полей
 def scr_input_form(name, color):
     return f'<script>changeInputBorderColor("{name}", "{color}");</script>'
+# функция помещения строки в span с классом displaying
 def spanned(str):
     return f"<span class=\"displaying\" style=\"display:none\">{str}</span>"
 # функция для проверки имени или фамилии
@@ -179,7 +188,7 @@ def normal_pass(password):
     return bool(re.match(r"^[A-Za-z\d@$!%*?&]+$", password))
 
 if __name__ == "__main__":
-    # webbrowser.open("http://127.0.0.1:5000/")
+    webbrowser.open("http://127.0.0.1:5000/")
     app.run(debug=True)
     
     

@@ -1,3 +1,4 @@
+// функция для изменения доступа к кнопке
 function btnsAccess(action) {
     const buttons = document.querySelectorAll('button');
     
